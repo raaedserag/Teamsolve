@@ -1,6 +1,6 @@
 # Teamsolve
 #
-## made using Python, Bootstrap5 and flask
+#### made using Python, Bootstrap5 and flask
 #
 The purpose of this website is to help programmers dive into competitive programming without worrying about where they stopped last day and help teams mated monitoring each other in order to have a competition and therefore encourage each other.
 #
