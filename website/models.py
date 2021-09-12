@@ -1,6 +1,11 @@
 from . import db
 from flask_login import UserMixin
 
+sols = db.Table('sols',
+                db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                db.Column('problem_id', db.Integer, db.ForeignKey('problem.id'))
+                )
+
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,17 +21,10 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     name = db.Column(db.String(150))
-    solvedToday = db.Column(db.Integer)
-    solvedTodayIndices = db.Column(db.String(200))
-    solvedOverall = db.Column(db.Integer)
     teamId = db.Column(db.Integer, db.ForeignKey('team.id'))
-
-    def resetDailySolved(self):
-        self.solvedToday = 0
-        self.solvedTodayIndices = '[]'
 
 
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(7))
-
+    solvers = db.relationship('User', secondary=sols, backref=db.backref('solutions', lazy='dynamic'))

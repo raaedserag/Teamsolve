@@ -4,18 +4,25 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User, Team
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from flask_login import login_user, login_required, logout_user, current_user
-
+from flask_login import login_user, login_required, logout_user, current_user, user_logged_out
 
 auth = Blueprint('auth', __name__)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    logged_in = True
+    try:
+        x = current_user.id
+    except:
+        logged_in = False
+
+    if logged_in:
+        return redirect(url_for('views.home'))
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
@@ -31,6 +38,7 @@ def login():
 
 
 @auth.route('/create-team', methods=['GET', 'POST'])
+@login_required
 def createTeam():
     if current_user.teamId:
         flash("You have already joined a team.", category='error')
@@ -38,7 +46,12 @@ def createTeam():
 
     if request.method == 'POST':
         name = request.form.get('name')
-        number = int(request.form.get('number'))
+        try:
+            number = int(request.form.get('number'))
+        except:
+            flash("Please enter your goal.", category='error')
+            return render_template("team.html", user=current_user)
+
         if not name:
             flash('Please enter the name.', category='error')
 
@@ -46,17 +59,11 @@ def createTeam():
             flash("You have already joined a team.", category='error')
             return redirect(url_for('views.home'))
 
-        elif Team.query.filter_by(name=name).first():
-            flash("This name has already been taken", category='error')
-
-        elif not name:
-            flash('Please enter the name.', category='error')
-
         elif number <= 0:
             flash('Problems number per day must be larger than 0.', category='error')
 
         elif number > 50:
-            flash('Woo! take it easy champ, leave some for next year. (max is 50 per day)', category='error')
+            flash('Woo! take it easy champ, leave some for next month. (max is 50 per day)', category='error')
 
         else:
             new_team = Team(name=name, problemsNum=number, index=0, members=[current_user], listNum=0)
@@ -70,6 +77,7 @@ def createTeam():
 
 
 @auth.route('/join-team', methods=['GET', 'POST'])
+@login_required
 def joinTeam():
     if request.method == 'POST':
         code = request.form.get('code')
@@ -98,6 +106,10 @@ def logout():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def sign_up():
+
+    if is_logged_in():
+        return redirect(url_for('views.home'))
+
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
@@ -116,7 +128,7 @@ def sign_up():
         elif len(pass1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, name=name, solvedToday=0, solvedTodayIndices = '', solvedOverall=0, password=generate_password_hash(pass1, method='sha256'))
+            new_user = User(email=email, name=name, password=generate_password_hash(pass1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
@@ -141,3 +153,14 @@ def decrypt_id(enc):
 def join_team(team_id):
     current_user.teamId = team_id
     db.session.commit()
+
+
+def is_logged_in():
+    try:
+        x = current_user.id
+    except:
+        return False
+
+    return True
+
+

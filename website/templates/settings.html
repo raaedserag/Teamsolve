@@ -1,0 +1,38 @@
+{% extends "index.html" %} {% block title %}Home{% endblock %}
+{% block content %}
+<div style="padding: 49px;">
+   <form method="POST">
+      <h3 style="color: black; "  align="center">Change team settings</h3>
+      <br>
+      <br>
+      <center>
+      <div class="form-group">
+         <label style="color: black;"  form="name">Team Name</label>
+         <input type="name" style="width: 400px; color: red" class="form-control" id="name" value="{{team.name}}" name="name" placeholder="Enter Name ">
+      </div>
+      <br>
+      <div class="form-group">
+         <label style="width: 100px;color: black;" form="name">Daily goal</label>
+         <input type="number" style="width: 300px;color: red; text-align: center;" step="1" min="1" max="50" value="{{team.problemsNum}}" class="form-control" id="number" name="number" placeholder="Enter problems number per day">
+      </div>
+      <br>
+      <br>
+      <button type="submit" name="btn" value="change" class="btn btn-primary">Submit</button>
+      </center>
+   </form>
+   <br>
+   <br>
+   <br>
+   <hr style="width: auto"/>
+   <br>
+   <br>
+   <br>
+   <form  method="POST">
+
+      <center>
+         <button type="submit" name="btn" value="leave" class="btn btn-danger">Leave Team</button>
+      </center>
+   </form>
+</div>
+<br> <br>
+{% endblock %}

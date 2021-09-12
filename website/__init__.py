@@ -9,6 +9,23 @@ db = SQLAlchemy()
 DB_NAME = "database.db"
 
 
+def test():
+    from .models import User, Team, Problem
+    user1 = User(name="demon", password="hello1234e", email="dodico@com")
+    user2 = User(name="demon2",password="hello1234",  email="doddico@com")
+    user3 = User(name="demon3",password="hello1234",  email="dodfico@com")
+    db.session.add(user1)
+    db.session.add(user2)
+    db.session.add(user3)
+    db.session.commit()
+    user1.solutions.append(Problem.query.get(1))
+    user2.solutions.append(Problem.query.get(1))
+    user2.solutions.append(Problem.query.get(2))
+    user3.solutions.append(Problem.query.get(2))
+    user2.solutions.append(Problem.query.get(3))
+    db.session.commit()
+
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
@@ -31,6 +48,7 @@ def create_app():
     with app.app_context():
         if not Problem.query.get(int(1)):
             load_problems(app)
+            # test()
 
     @login_manager.user_loader
     def load_user(id):
