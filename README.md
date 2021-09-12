@@ -1,10 +1,8 @@
 # Teamsolve
 #
 
-The purpose of this website is to help programmers dive into competitive programming without worrying about where they stopped last day and help teams mated monitoring each other in order to have a competition and therefore encourage each other, right?
-<br>
-The truth is, I made it for my lazy ass to keep track of my solved problem on codeforces.
-<br>
+The purpose of this website is to help programmers dive into competitive programming without worrying about where they stopped last day and help teams mated monitoring each other in order to have a competition and therefore encourage each other.
+<br><br>
 statistics will be added later.
 
 #
