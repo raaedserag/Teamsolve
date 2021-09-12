@@ -1,5 +1,3 @@
-import random, cryptocode
-
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User, Team
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -106,6 +104,8 @@ def logout():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def sign_up():
+    email = ""
+    name = ""
 
     if is_logged_in():
         return redirect(url_for('views.home'))
@@ -135,7 +135,7 @@ def sign_up():
             flash('Account created!', category='success')
             return redirect(url_for('views.home'))
 
-    return render_template("signup.html", user=current_user)
+    return render_template("signup.html", user=current_user, email=email, name=name)
 
 
 def generate_invitation_code():
